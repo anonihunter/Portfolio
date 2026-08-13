@@ -253,7 +253,7 @@ export default function Home() {
             </a>
 
             <a
-              href="https://www.linkedin.com/"
+              href="https://www.linkedin.com/in/the-abhishek-kr/"
               target="_blank"
               rel="noreferrer"
             >
@@ -261,7 +261,7 @@ export default function Home() {
               LinkedIn
             </a>
 
-            <a href="mailto:abhishek.kr@gmail.com">
+            <a href="mailto:abhishekkumar62437@gmail.com">
               <Mail size={17} />
               Email
             </a>
@@ -562,20 +562,20 @@ export default function Home() {
 
         <a
           className="contactMail"
-          href="mailto:abhishek.kr@gmail.com"
+          href="mailto:abhishekkumar62437@gmail.com"
         >
-          abhishek.kr@gmail.com
+          abhishekkumar62437@gmail.com
           <ArrowUpRight size={22} />
         </a>
 
         <p className="phone">
-          +91 7484944456
+          +91 7499241436
         </p>
 
         <div className="actions">
           <a
             className="button primary"
-            href="mailto:abhishek.kr@gmail.com"
+            href="mailto:abhishekkumar62437@gmail.com"
           >
             Email Me
             <Mail size={16} />
