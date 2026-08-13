@@ -1,101 +1,611 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import AmbientBackground from "./components/AmbientBackground";
+import {
+  ArrowUpRight,
+  Mail,
+  Moon,
+  Monitor,
+  Sun,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
+import { useTheme } from "next-themes";
+
+const projects = [
+  {
+    name: "Smart File Manager",
+    description:
+      "A modular Python CLI application that automatically organizes files by type and supports configurable behavior through JSON.",
+    stack: [
+      "Python",
+      "pathlib",
+      "shutil",
+      "hashlib",
+      "watchdog",
+    ],
+  },
+  {
+    name: "Interactive Data Dashboard",
+    description:
+      "An interactive dashboard for CSV data exploration and visualization.",
+    stack: ["Streamlit", "Pandas", "Plotly"],
+  },
+];
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const { theme, setTheme } = useTheme();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const [mounted, setMounted] = useState(false);
+  const [sound, setSound] = useState(false);
+
+  const audio = useRef<AudioContext | null>(null);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const cursorX = useSpring(mouseX, {
+    stiffness: 500,
+    damping: 35,
+  });
+
+  const cursorY = useSpring(mouseY, {
+    stiffness: 500,
+    damping: 35,
+  });
+
+  useEffect(() => {
+    setMounted(true);
+
+    const savedSound = localStorage.getItem("portfolio-sound");
+
+    setSound(savedSound === "on");
+
+    const handleMouseMove = (event: MouseEvent) => {
+      mouseX.set(event.clientX);
+      mouseY.set(event.clientY);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [mouseX, mouseY]);
+
+  function playSound(frequency = 420) {
+    if (!sound) return;
+
+    try {
+      audio.current ??= new AudioContext();
+
+      const context = audio.current;
+
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+
+      oscillator.frequency.value = frequency;
+
+      gain.gain.setValueAtTime(
+        0.025,
+        context.currentTime
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        context.currentTime + 0.07
+      );
+
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+
+      oscillator.start();
+
+      oscillator.stop(
+        context.currentTime + 0.07
+      );
+    } catch {
+      // Sound is optional.
+    }
+  }
+
+  function toggleSound() {
+    const next = !sound;
+
+    setSound(next);
+
+    localStorage.setItem(
+      "portfolio-sound",
+      next ? "on" : "off"
+    );
+
+    if (next) {
+      playSound(520);
+    }
+  }
+
+  function toggleTheme() {
+    setTheme(theme === "dark" ? "light" : "dark");
+    playSound(360);
+  }
+
+  const themeIcon =
+    !mounted || theme === "dark" ? (
+      <Moon size={16} />
+    ) : (
+      <Sun size={16} />
+    );
+
+  return (
+    <>
+      <AmbientBackground />
+
+      <main>
+      {/* Custom cursor */}
+      <motion.div
+        className="cursor"
+        style={{
+          x: cursorX,
+          y: cursorY,
+        }}
+      />
+
+      {/* Navbar */}
+      <header className="nav">
+        <a
+          href="#top"
+          className="brand"
+          onClick={() => playSound()}
+        >
+          AK<span>.</span>
+        </a>
+
+        <nav className="desktopNav">
+          <a href="#about">About</a>
+          <a href="#skills">Skills</a>
+          <a href="#projects">Projects</a>
+          <a href="#experience">Experience</a>
+          <a href="#education">Education</a>
+        </nav>
+
+        <div className="navActions">
+          <button
+            aria-label="Change theme"
+            onClick={toggleTheme}
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            {themeIcon}
+          </button>
+
+          <button
+            aria-label="Toggle sound"
+            onClick={toggleSound}
+          >
+            {sound ? (
+              <Volume2 size={16} />
+            ) : (
+              <VolumeX size={16} />
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section id="top" className="hero section">
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.7,
+          }}
+        >
+          <p className="eyebrow">
+            SOFTWARE ENGINEERING · DATA · ML
+          </p>
+
+          <h1>
+            Abhishek
+            <br />
+            <span>Kumar.</span>
+          </h1>
+
+          <p className="heroText">
+            Software Engineering student at IIT Madras
+            focused on Python, backend engineering,
+            data science and machine learning.
+          </p>
+
+          <div className="actions">
+            <a
+              href="#projects"
+              className="button primary"
+              onClick={() => playSound(500)}
+            >
+              View Projects
+              <ArrowUpRight size={17} />
+            </a>
+
+            <a
+              href="#contact"
+              className="button"
+              onClick={() => playSound()}
+            >
+              Get in touch
+              <Mail size={16} />
+            </a>
+          </div>
+
+          <div className="socials">
+            <a
+              href="https://github.com/anonihunter"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span className="socialIcon">GH</span>
+              GitHub
+            </a>
+
+            <a
+              href="https://www.linkedin.com/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span className="socialIcon">in</span>
+              LinkedIn
+            </a>
+
+            <a href="mailto:abhishek.kr@gmail.com">
+              <Mail size={17} />
+              Email
+            </a>
+          </div>
+        </motion.div>
+
+        <div className="heroMeta">
+          <span>Based in India</span>
+          <span>Open-source contributor</span>
+        </div>
+      </section>
+
+      {/* About */}
+      <section id="about" className="section split">
+        <div className="sectionLabel">
+          01 — ABOUT
+        </div>
+
+        <div>
+          <h2>
+            Building useful software with a strong
+            engineering foundation.
+          </h2>
+
+          <p>
+            Motivated Software Engineering student at
+            IIT Madras with a strong foundation in
+            Python, Data Structures, OOP and DBMS.
+          </p>
+
+          <p>
+            Experienced in building Python applications,
+            interactive tools and contributing to
+            open-source projects through GitHub
+            collaboration.
+          </p>
+        </div>
+      </section>
+
+      {/* Skills */}
+      <section id="skills" className="section">
+        <div className="sectionLabel">
+          02 — SKILLS
+        </div>
+
+        <div className="skillGrid">
+          <div className="skillCard">
+            <p>Languages</p>
+
+            <div>
+              <span>C</span>
+              <span>Python</span>
+              <span>JavaScript</span>
+            </div>
+          </div>
+
+          <div className="skillCard">
+            <p>Frameworks & Libraries</p>
+
+            <div>
+              <span>NumPy</span>
+              <span>Pandas</span>
+              <span>Streamlit</span>
+              <span>Matplotlib</span>
+            </div>
+          </div>
+
+          <div className="skillCard">
+            <p>Databases</p>
+
+            <div>
+              <span>MySQL</span>
+              <span>MongoDB</span>
+            </div>
+          </div>
+
+          <div className="skillCard">
+            <p>Core CS</p>
+
+            <div>
+              <span>OOP</span>
+              <span>DBMS</span>
+            </div>
+          </div>
+
+          <div className="skillCard">
+            <p>Tools</p>
+
+            <div>
+              <span>VS Code</span>
+              <span>Git</span>
+              <span>GitHub</span>
+              <span>Jupyter Notebook</span>
+            </div>
+          </div>
+
+          <div className="skillCard">
+            <p>Currently Learning</p>
+
+            <div>
+              <span>DSA</span>
+              <span>Supervised ML</span>
+              <span>Scikit-learn</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Projects */}
+      <section id="projects" className="section">
+        <div className="sectionLabel">
+          03 — PROJECTS
+        </div>
+
+        <div className="projectGrid">
+          {projects.map((project, index) => (
+            <motion.article
+              key={project.name}
+              className={`projectCard ${
+                index === 0 ? "featured" : ""
+              }`}
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              whileHover={{
+                y: -5,
+              }}
+              onClick={() => playSound(300)}
+            >
+              <div className="projectTop">
+                <span>
+                  {index === 0
+                    ? "FEATURED"
+                    : "PROJECT"}
+                </span>
+
+                <ArrowUpRight size={18} />
+              </div>
+
+              <h3>{project.name}</h3>
+
+              <p>{project.description}</p>
+
+              <div className="tags">
+                {project.stack.map((item) => (
+                  <span key={item}>
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+      {/* Experience */}
+      <section
+        id="experience"
+        className="section"
+      >
+        <div className="sectionLabel">
+          04 — OPEN SOURCE
+        </div>
+
+        <div className="timeline">
+          <article>
+            <div className="dot" />
+
+            <div>
+              <p className="date">
+                JAN 2026 — FEB 2026
+              </p>
+
+              <h3>
+                Ray — Documentation Contributor
+              </h3>
+
+              <p>
+                Contributed documentation improvements
+                related to job-level checkpointing in
+                Ray Data and worked with project
+                maintainers through review feedback,
+                pull requests and documentation updates.
+              </p>
+            </div>
+          </article>
+
+          <article>
+            <div className="dot" />
+
+            <div>
+              <p className="date">
+                JAN 2026
+              </p>
+
+              <h3>
+                VATSIM UK — Open Source Contributor
+              </h3>
+
+              <p>
+                Contributed an AIRAC data update by
+                correcting runway headings for EGHE
+                (Scilly Isles Airport), ensuring airport
+                data matched official aviation
+                publications.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* Education */}
+      <section
+        id="education"
+        className="section"
+      >
+        <div className="sectionLabel">
+          05 — EDUCATION
+        </div>
+
+        <div className="education">
+          <article>
+            <p className="date">
+              JAN 2025 — JUL 2028 · ONGOING
+            </p>
+
+            <h3>
+              Indian Institute of Technology, Madras
+            </h3>
+
+            <p>
+              Bachelor of Science, Data Science and
+              Applications
+            </p>
+          </article>
+
+          <article>
+            <p className="date">
+              JUL 2021 — MAY 2025
+            </p>
+
+            <h3>
+              Indira Gandhi National Open University
+            </h3>
+
+            <p>
+              Bachelor of Arts, Public Administration
+              Honours
+            </p>
+          </article>
+        </div>
+      </section>
+
+      {/* Achievement */}
+      <section className="section achievement">
+        <div className="sectionLabel">
+          06 — ACHIEVEMENT
+        </div>
+
+        <div>
+          <p className="date">
+            2026
+          </p>
+
+          <h2>
+            Margazhi Cyber CTF — IIT Madras
+          </h2>
+
+          <p>
+            Finalist, Rank 19. Cleared the 24-hour
+            Round 1 hacking challenge and qualified for
+            the 24-hour Round 2 CTF, scoring 700/820
+            points (~85.4%).
+          </p>
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section
+        id="contact"
+        className="contact section"
+      >
+        <p className="eyebrow">
+          LET&apos;S CONNECT
+        </p>
+
+        <h2>
+          Let&apos;s build something useful.
+        </h2>
+
+        <a
+          className="contactMail"
+          href="mailto:abhishek.kr@gmail.com"
+        >
+          abhishek.kr@gmail.com
+          <ArrowUpRight size={22} />
+        </a>
+
+        <p className="phone">
+          +91 7484944456
+        </p>
+
+        <div className="actions">
+          <a
+            className="button primary"
+            href="mailto:abhishek.kr@gmail.com"
+          >
+            Email Me
+            <Mail size={16} />
           </a>
+
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            className="button"
+            href="https://github.com/anonihunter"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
-            Read our docs
+            <span className="socialIcon">GH</span>
+            GitHub
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      <footer>
+        <span>ABHISHEK KUMAR</span>
+
+        <span>
+          Built with Next.js + Motion
+        </span>
+
+        <span>
+          © {new Date().getFullYear()}
+        </span>
       </footer>
-    </div>
+    </main>
+    </>
+    
   );
 }
