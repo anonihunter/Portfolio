@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Abhishek Kumar — Software Engineering Portfolio
 
-## Getting Started
+> Personal portfolio website showcasing my projects, technical skills, open-source contributions, education, and experience.
 
-First, run the development server:
+## 🌐 Live Portfolio
+
+**[View Live Portfolio](YOUR_LIVE_LINK_HERE)**
+
+---
+
+## 👨‍💻 About
+
+I'm **Abhishek Kumar**, a Software Engineering student at **IIT Madras**, interested in software engineering, backend development, data science, and machine learning.
+
+This portfolio is built to present my technical work and professional profile in a clean, modern, and interactive experience.
+
+---
+
+## 🛠️ Tech Stack
+
+* **Next.js**
+* **React**
+* **TypeScript / TSX**
+* **Tailwind CSS**
+* **Framer Motion**
+* **Lucide React**
+* **Web Audio API**
+
+---
+
+## ✨ Features
+
+* Minimalist, responsive design
+* Dark / Light / System themes
+* Smooth Framer Motion animations
+* Interactive animated background
+* Cursor-following ambient glow
+* Optional UI sound effects
+* Project-focused presentation
+* Responsive mobile experience
+* Accessibility and reduced-motion support
+
+---
+
+## 🔗 Links
+
+* **Portfolio:** [View Live Portfolio](YOUR_LIVE_LINK_HERE)
+* **GitHub:** [github.com/anonihunter](https://github.com/anonihunter)
+* **LinkedIn:** [LinkedIn Profile](YOUR_LINKEDIN_URL)
+* **Email:** [abhishek.kr@gmail.com](mailto:abhishek.kr@gmail.com)
+
+---
+
+## 📄 Resume
+
+**[View / Download Resume](YOUR_RESUME_LINK_HERE)**
+
+---
+
+## 🚀 Run Locally
 
 ```bash
+git clone YOUR_GITHUB_REPOSITORY_URL
+cd YOUR_PROJECT_FOLDER
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📌 Note
 
-## Learn More
+This is my personal portfolio website. The content presented here reflects my current projects, skills, education, and professional experience.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Built with Next.js, React, TypeScript & Motion.**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**© 2026 Abhishek Kumar**
