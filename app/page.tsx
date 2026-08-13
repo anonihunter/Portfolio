@@ -7,7 +7,6 @@ import {
   ArrowUpRight,
   Mail,
   Moon,
-  Monitor,
   Sun,
   Volume2,
   VolumeX,
