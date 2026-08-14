@@ -46,8 +46,8 @@ This portfolio is built to present my technical work and professional profile in
 
 * **Portfolio:** [View Live Portfolio](YOUR_LIVE_LINK_HERE)
 * **GitHub:** [github.com/anonihunter](https://github.com/anonihunter)
-* **LinkedIn:** [LinkedIn Profile](YOUR_LINKEDIN_URL)
-* **Email:** [abhishek.kr@gmail.com](mailto:abhishek.kr@gmail.com)
+* **LinkedIn:** [LinkedIn Profile](https://www.linkedin.com/in/the-abhishek-kr/)
+* **Email:** [abhishek.kr@gmail.com](mailto:abhishekkumar62437@gmail.com)
 
 ---
 
