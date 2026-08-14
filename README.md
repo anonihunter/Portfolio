@@ -4,7 +4,7 @@
 
 ## 🌐 Live Portfolio
 
-**[View Live Portfolio](https://abhishekkrportfolio-git-main-anonihunters-projects.vercel.app/)**
+**[View Live Portfolio](https://abhishekkrportfolio-sigma.vercel.app/)**
 
 ---
 
