@@ -261,7 +261,7 @@ main {
   border: 1px solid transparent;
   border-radius: 50%;
 
-  color: #777;
+  color: #494949;
 
   transition:
     color 0.2s ease,
@@ -1230,6 +1230,16 @@ html.light .button.primary:hover {
   background: #333;
 }
 
+html.light .button {
+  color: #050505;
+  background: #fff;
+}
+
+html.light .button:hover {
+  transform: translateY(-3px);
+  background: #e8e8e8;
+}
+
 html.light .timeline .dot {
   background: #111;
 
@@ -1240,6 +1250,8 @@ html.light .timeline .dot {
 html.light .contact::before {
   background: rgba(0, 0, 0, 0.025);
 }
+
+
 
 /* ========================================
    RESPONSIVE
@@ -1360,25 +1372,6 @@ html.light .contact::before {
   }
 }
 
-.ambientCursor {
-  position: fixed;
-
-  inset: 0;
-
-  pointer-events: none;
-
-  z-index: -1;
-
-  background:
-    radial-gradient(
-      450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(255, 255, 255, 0.035),
-      transparent 65%
-    );
-
-  transition: background 0.15s ease;
-}
-
 /* ================================
    AMBIENT BACKGROUND
 ================================ */
@@ -1479,6 +1472,23 @@ body::after {
 }
 
 
+
+/* Particle background */
+
+.particleCanvas {
+  position: fixed;
+  inset: 0;
+  
+  width: 100vw;
+  height: 100vh;
+  
+  display: block;
+  
+  pointer-events: none;
+  
+  z-index: 0;
+}
+
 /* ================================
    CURSOR GLOW
 ================================ */
@@ -1493,7 +1503,7 @@ body::after {
   background:
     radial-gradient(
       420px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(255, 255, 255, 0.045),
+      rgba(255, 255, 255, 0.055),
       transparent 65%
     );
 
