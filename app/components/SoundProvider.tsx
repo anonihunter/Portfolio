@@ -63,18 +63,18 @@ export function SoundProvider({
   };
 
   const click = () => {
-    playTone(520, 0.06, 0.035, "sine");
+    playTone(520, 0.06, 0.055, "sine");
   };
 
   const hover = () => {
-    playTone(760, 0.035, 0.012, "sine");
+    playTone(760, 0.035, 0.018, "sine");
   };
 
   const success = () => {
-    playTone(520, 0.08, 0.025);
+    playTone(520, 0.08, 0.04);
     
     setTimeout(() => {
-      playTone(720, 0.1, 0.02);
+      playTone(720, 0.1, 0.035);
     }, 60);
   };
 

@@ -11,6 +11,8 @@ import {
   Sun,
   Volume2,
   VolumeX,
+  Menu,
+  X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -40,6 +42,8 @@ export default function Home() {
 
   const [mounted, setMounted] = useState(false);
   const [sound, setSound] = useState(false);
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const audio = useRef<AudioContext | null>(null);
 
@@ -157,21 +161,32 @@ export default function Home() {
         <a
           href="#top"
           className="brand"
-          onClick={() => playSound()}
+          onClick={() => {
+            playSound();
+            setMobileMenuOpen(false);
+          }}
         >
           AK<span>.</span>
         </a>
 
+        {/* Desktop Navigation */}
         <nav className="desktopNav">
           <a href="#about">About</a>
           <a href="#skills">Skills</a>
           <a href="#projects">Projects</a>
           <a href="#experience">Experience</a>
           <a href="#education">Education</a>
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Resume
+          </a>
         </nav>
 
-        <div className="navActions">
+        {/* Desktop Actions */}
+        <div className="navActions desktopActions">
           <button
             aria-label="Change theme"
             onClick={toggleTheme}
@@ -190,6 +205,110 @@ export default function Home() {
             )}
           </button>
         </div>
+
+        {/* Mobile Menu Button */}
+        <div className="mobileActions">
+          <button
+            aria-label="Change theme"
+            onClick={toggleTheme}
+          >
+            {themeIcon}
+          </button>
+
+          <button
+            aria-label="Toggle sound"
+            onClick={toggleSound}
+          >
+            {sound ? (
+              <Volume2 size={16} />
+            ) : (
+              <VolumeX size={16} />
+            )}
+          </button>
+
+          <button
+            className="menuButton"
+            aria-label={
+              mobileMenuOpen
+                ? "Close navigation"
+                : "Open navigation"
+            }
+            aria-expanded={mobileMenuOpen}
+            onClick={() =>
+              setMobileMenuOpen((previous) => !previous)
+            }
+          >
+            {mobileMenuOpen ? (
+              <X size={19} />
+            ) : (
+              <Menu size={19} />
+            )}
+          </button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <motion.nav
+            className="mobileNav"
+            initial={{
+              opacity: 0,
+              y: -10,
+              scale: 0.98,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: 1,
+            }}
+            transition={{
+              duration: 0.2,
+            }}
+          >
+            <a
+              href="#about"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              About
+            </a>
+
+            <a
+              href="#skills"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Skills
+            </a>
+
+            <a
+              href="#projects"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Projects
+            </a>
+
+            <a
+              href="#experience"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Experience
+            </a>
+
+            <a
+              href="#education"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Education
+            </a>
+
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Resume
+            </a>
+          </motion.nav>
+        )}
       </header>
 
       {/* Hero */}
@@ -236,7 +355,7 @@ export default function Home() {
             <a
               href="#contact"
               className="button"
-              onClick={() => playSound()}
+              onClick={() => playSound(500)}
             >
               Get in touch
               <Mail size={16} />
