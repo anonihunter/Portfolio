@@ -1,104 +1,120 @@
 "use client";
 
-import { createContext, useContext, useRef } from "react";
+import React, { createContext, useContext, useRef, useState, useEffect } from 'react';
 
-type SoundContextType = {
-  click: () => void;
-  hover: () => void;
-  success: () => void;
-};
+interface SoundContextType {
+  enabled: boolean;
+  toggleSound: () => void;
+  playClick: () => void;
+  playHover: () => void;
+  playSuccess: () => void;
+  playParticleBurst: () => void;
+}
 
 const SoundContext = createContext<SoundContextType | null>(null);
 
-export function SoundProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const audioContext = useRef<AudioContext | null>(null);
+export const SoundProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [enabled, setEnabled] = useState(false);
+  const audioContextRef = useRef<AudioContext | null>(null);
 
-  const getContext = () => {
-    if (!audioContext.current) {
-      audioContext.current = new AudioContext();
+  useEffect(() => {
+    const saved = localStorage.getItem('portfolio-sound');
+    if (saved === 'on') {
+      setEnabled(true);
     }
+  }, []);
 
-    return audioContext.current;
-  };
-
-  const playTone = (
-    frequency: number,
-    duration: number,
-    volume: number,
-    type: OscillatorType = "sine"
-  ) => {
-    const ctx = getContext();
-
-    if (ctx.state === "suspended") {
-      ctx.resume();
+  const getAudioContext = () => {
+    if (!audioContextRef.current) {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx) {
+        audioContextRef.current = new AudioCtx();
+      }
     }
-
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    oscillator.type = type;
-    oscillator.frequency.value = frequency;
-
-    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-
-    gain.gain.exponentialRampToValueAtTime(
-      volume,
-      ctx.currentTime + 0.01
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      0.0001,
-      ctx.currentTime + duration
-    );
-
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-
-    oscillator.start();
-    oscillator.stop(ctx.currentTime + duration);
+    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume();
+    }
+    return audioContextRef.current;
   };
 
-  const click = () => {
-    playTone(520, 0.06, 0.055, "sine");
+  const playTone = (frequency: number, duration: number, volume: number, type: OscillatorType = 'sine') => {
+    if (!enabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      oscillator.type = type;
+      oscillator.frequency.value = frequency;
+
+      const now = ctx.currentTime;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(volume, now + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+
+      oscillator.start(now);
+      oscillator.stop(now + duration);
+    } catch {
+      // Audio is non-blocking
+    }
   };
 
-  const hover = () => {
-    playTone(760, 0.035, 0.018, "sine");
+  const toggleSound = () => {
+    const next = !enabled;
+    setEnabled(next);
+    localStorage.setItem('portfolio-sound', next ? 'on' : 'off');
+    if (next) {
+      // Immediate gentle feedback chime
+      setTimeout(() => {
+        playTone(520, 0.08, 0.05, 'sine');
+      }, 50);
+    }
   };
 
-  const success = () => {
-    playTone(520, 0.08, 0.04);
-    
+  const playClick = () => {
+    playTone(480, 0.05, 0.045, 'sine');
+  };
+
+  const playHover = () => {
+    playTone(720, 0.03, 0.015, 'sine');
+  };
+
+  const playSuccess = () => {
+    playTone(520, 0.08, 0.035, 'sine');
     setTimeout(() => {
-      playTone(720, 0.1, 0.035);
-    }, 60);
+      playTone(680, 0.08, 0.03, 'sine');
+    }, 50);
+    setTimeout(() => {
+      playTone(880, 0.12, 0.025, 'sine');
+    }, 100);
+  };
+
+  const playParticleBurst = () => {
+    playTone(640, 0.04, 0.02, 'sine');
   };
 
   return (
-    <SoundContext.Provider
-      value={{
-        click,
-        hover,
-        success,
-      }}
-    >
+    <SoundContext.Provider value={{ enabled, toggleSound, playClick, playHover, playSuccess, playParticleBurst }}>
       {children}
     </SoundContext.Provider>
   );
-}
+};
 
-export function useSound() {
+const defaultSoundState: SoundContextType = {
+  enabled: false,
+  toggleSound: () => {},
+  playClick: () => {},
+  playHover: () => {},
+  playSuccess: () => {},
+  playParticleBurst: () => {},
+};
+
+export function useSound(): SoundContextType {
   const context = useContext(SoundContext);
-
-  if (!context) {
-    throw new Error(
-      "useSound must be used inside SoundProvider"
-    );
-  }
-
-  return context;
+  return context || defaultSoundState;
 }
