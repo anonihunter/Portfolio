@@ -3,7 +3,6 @@
 import React from 'react';
 import { X, Download, GraduationCap, Briefcase, Award, Code2, Mail, Phone, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSound } from './SoundProvider';
 
 interface ResumeModalProps {
   isOpen: boolean;
@@ -11,9 +10,8 @@ interface ResumeModalProps {
 }
 
 export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => {
-  const sound = typeof useSound === 'function' ? useSound() : null;
-  const playClick = sound?.playClick || (() => {});
-  const playSuccess = sound?.playSuccess || (() => {});
+  const playClick = () => {};
+  const playSuccess = () => {};
 
   if (!isOpen) return null;
 
