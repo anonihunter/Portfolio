@@ -15,11 +15,6 @@ import {
   Check,
   Sparkles,
   FileText,
-  Phone,
-  Terminal,
-  Database,
-  Code,
-  Layers,
 } from 'lucide-react';
 
 import AmbientBackground from './components/AmbientBackground';
